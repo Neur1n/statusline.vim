@@ -3,6 +3,27 @@ scriptencoding utf-8
 let s:save_cpo = &cpo
 set cpo&vim
 
+"********************************************************************* {Palette
+let s:gruvbox = {
+    \ 'aqua':   ['#8ec07c', 108],
+    \ 'blue':   ['#83a598', 109],
+    \ 'green':  ['#b8bb26', 142],
+    \ 'orange': ['#fe8019', 208],
+    \ 'purple': ['#d3869b', 175],
+    \ 'red':    ['#fb4934', 167],
+    \ 'yellow': ['#fabd2f', 214],
+    \ 'bg0_h':  ['#1d2021', 234],
+    \ 'bg0':    ['#282828', 235],
+    \ 'bg0_s':  ['#32302f', 236],
+    \ 'fg0':    ['#fbf1c7', 229],
+    \ 'fg1':    ['#ebdbb2', 223],
+    \ 'gray':   ['#928374', 245],
+\ }
+" }
+
+let g:solarized = {}
+
+"************************************************************************ {Misc
 let s:spc = ' '
 let s:sep = '%=%='
 let s:mode_map = {
@@ -21,7 +42,9 @@ let s:mode_map = {
     \ '' : 'S',
     \ 't': 'TERMINAL',
 \ }
+" }
 
+"************************************************************************ {Core
 let s:startup = 1
 
 function! statusline#Update()
@@ -69,6 +92,7 @@ function! s:Right(status)
         return s:Swap().s:Ruler()
     endif
 endfunction
+" }
 
 "*********************************************************************** {Parts
 function! s:Mode()
@@ -154,11 +178,11 @@ endfunction
 " }
 
 "**************************************************************** {Highlighting
-exec 'source ./palette.vim'
+" exec 'source ./palette.vim'
 if g:colors_name ==# 'gruvbox'
-    let s:scheme = 'g:gruvbox'
+    let s:scheme = 's:gruvbox'
 elseif g:colors_name ==# 'solarized'
-    let s:scheme = 'g:solarized'
+    let s:scheme = 's:solarized'
 endif
 
 function! statusline#UpdateColor(...)
