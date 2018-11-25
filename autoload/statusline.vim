@@ -47,7 +47,7 @@ let s:mode_map = {
 "************************************************************************ {Core
 let s:startup = 1
 
-function! statusline#Update()
+function! statusline#Update() abort
     if s:startup
         call s:Construct('active')
         call s:StaticColor()
@@ -65,18 +65,18 @@ function! statusline#Update()
     endfor
 endfunction
 
-function! statusline#UpdateOnce()
+function! statusline#UpdateOnce() abort
     if !exists('w:layout_changed') || w:layout_changed
         call statusline#Update()
     endif
 endfunction
 
-function! s:Construct(status)
+function! s:Construct(status) abort
     return s:Left(a:status).s:sep.s:Right(a:status).
          \ '%{statusline#UpdateColor()}'
 endfunction
 
-function! s:Left(status)
+function! s:Left(status) abort
     if a:status ==# 'active'
         return s:Mode().s:GitBranch().s:Name().s:Modification()
     elseif a:status ==# 'inactive'
@@ -84,7 +84,7 @@ function! s:Left(status)
     endif
 endfunction
 
-function! s:Right(status)
+function! s:Right(status) abort
     if a:status ==# 'active'
         return s:Tag().s:Swap().'%<'.s:Info().s:Ruler()
                     \.s:Whitespace().s:Warning().s:Error()
@@ -95,11 +95,11 @@ endfunction
 " }
 
 "*********************************************************************** {Parts
-function! s:Mode()
+function! s:Mode() abort
     return '%#Mode_# %{statusline#Mode()} '
 endfunction
 
-function! statusline#Mode()
+function! statusline#Mode() abort
     if &filetype ==# 'help'
         let l:mode = 'HELP'
     " elseif &filetype ==# 'qf'
@@ -118,30 +118,30 @@ function! statusline#Mode()
     return l:mode
 endfunction
 
-function! s:GitBranch()
+function! s:GitBranch() abort
     return '%#VCS_#'.(gitbranch#name() ==# '' ? '' : s:spc.'%{gitbranch#name()}')
 endfunction
 
-function! s:Name()
+function! s:Name() abort
     return '%#Name_#'.s:spc.'%n:%{expand("%:p:h:t")}/%t'
 endfunction
 
-function! s:Modification()
+function! s:Modification() abort
     let l:modified = '%m'
     let l:readonly = '%{&readonly ? " \ue0a2 " : ""}'
     return '%#Modification_#'.l:modified.l:readonly
 endfunction
 
-function! s:Tag()
+function! s:Tag() abort
     return '%#Tag_#'.'%{tagbar#currenttag("%s", "", "%f")}'.s:spc
 endfunction
 
-function! s:Swap()
+function! s:Swap() abort
     " Indicator for WindowSwap plugin.
     return '%#Swap_#'.'%{WindowSwap#IsCurrentWindowMarked() ? "WS" : ""}'
 endfunction
 
-function! s:Info()
+function! s:Info() abort
     " let l:value = '0x%B'
     " let l:type = '%Y'
 
@@ -160,19 +160,19 @@ function! s:Info()
     return '%#Info_#%Y'.'['.l:encoding.':'.l:fileformat.']'
 endfunction
 
-function! s:Ruler()
+function! s:Ruler() abort
     return '%#Ruler_#'.'%4l/%L:%-3v'
 endfunction
 
-function! s:Whitespace()
+function! s:Whitespace() abort
     return '%#Whitespace_#'.'%{whitespace#NextTrailing().info}'
 endfunction
 
-function! s:Warning()
+function! s:Warning() abort
     return '%#Warning_#'.'%{lintinfo#WarnCount()}'
 endfunction
 
-function! s:Error()
+function! s:Error() abort
     return '%#Error_#'.'%{lintinfo#ErrorCount()}'
 endfunction
 " }
@@ -185,7 +185,7 @@ elseif g:colors_name ==# 'solarized'
     let s:scheme = 's:solarized'
 endif
 
-function! statusline#UpdateColor(...)
+function! statusline#UpdateColor(...) abort
     for l:w in range(1, winnr('$'))
         if exists('w:inactive') && w:inactive == 1
             call s:InactiveColor()
@@ -210,7 +210,7 @@ function! statusline#UpdateColor(...)
     return ''
 endfunction
 
-function! s:StaticColor()
+function! s:StaticColor() abort
     exec printf("call s:Highlight('VCS_', %s.fg0[0], %s.bg0_h[0], %s.fg0[1], %s.bg0_h[1], 'bold')",
                 \ s:scheme, s:scheme, s:scheme, s:scheme)
     exec printf("call s:Highlight('Tag_', %s.fg1[0], %s.bg0_h[0], %s.fg1[1], %s.bg0_h[1], 'italic')",
@@ -228,7 +228,7 @@ function! s:StaticColor()
                 \ s:scheme, s:scheme, s:scheme, s:scheme)
 endfunction
 
-function! s:NormalColor()
+function! s:NormalColor() abort
     exec printf("call s:Highlight('Mode_', %s.bg0_h[0], %s.green[0], %s.bg0_h[1], %s.green[1], 'bold')",
                 \ s:scheme, s:scheme, s:scheme, s:scheme)
     exec printf("call s:Highlight('Name_', %s.aqua[0], %s.bg0_h[0], %s.aqua[1], %s.bg0_h[1], 'bold')",
@@ -239,7 +239,7 @@ function! s:NormalColor()
                 \ s:scheme, s:scheme, s:scheme, s:scheme)
 endfunction
 
-function! s:InsertColor()
+function! s:InsertColor() abort
     exec printf("call s:Highlight('Mode_', %s.bg0_h[0], %s.aqua[0], %s.bg0_h[1], %s.aqua[1], 'bold')",
                 \ s:scheme, s:scheme, s:scheme, s:scheme)
     exec printf("call s:Highlight('Name_', %s.blue[0], %s.bg0_h[0], %s.blue[1], %s.bg0_h[1], 'bold')",
@@ -250,7 +250,7 @@ function! s:InsertColor()
                 \ s:scheme, s:scheme, s:scheme, s:scheme)
 endfunction
 
-function! s:VisualColor()
+function! s:VisualColor() abort
     exec printf("call s:Highlight('Mode_', %s.bg0_h[0], %s.yellow[0], %s.bg0_h[1], %s.yellow[1], 'bold')",
                 \ s:scheme, s:scheme, s:scheme, s:scheme)
     exec printf("call s:Highlight('Name_', %s.orange[0], %s.bg0_h[0], %s.orange[1], %s.bg0_h[1], 'bold')",
@@ -261,7 +261,7 @@ function! s:VisualColor()
                 \ s:scheme, s:scheme, s:scheme, s:scheme)
 endfunction
 
-function! s:ReplaceColor()
+function! s:ReplaceColor() abort
     exec printf("call s:Highlight('Mode_', %s.bg0_h[0], %s.purple[0], %s.bg0_h[1], %s.purple[1], 'bold')",
                 \ s:scheme, s:scheme, s:scheme, s:scheme)
     exec printf("call s:Highlight('Name_', %s.blue[0], %s.bg0_h[0], %s.blue[1], %s.bg0_h[1], 'bold')",
@@ -272,7 +272,7 @@ function! s:ReplaceColor()
                 \ s:scheme, s:scheme, s:scheme, s:scheme)
 endfunction
 
-function! s:CmdlineColor()
+function! s:CmdlineColor() abort
     exec printf("call s:Highlight('Mode_', %s.bg0_h[0], %s.red[0], %s.bg0_h[1], %s.red[1], 'bold')",
                 \ s:scheme, s:scheme, s:scheme, s:scheme)
     exec printf("call s:Highlight('Name_', %s.aqua[0], %s.bg0_h[0], %s.aqua[1], %s.bg0_h[1], 'bold')",
@@ -283,7 +283,7 @@ function! s:CmdlineColor()
                 \ s:scheme, s:scheme, s:scheme, s:scheme)
 endfunction
 
-function! s:InactiveColor()
+function! s:InactiveColor() abort
     exec printf("call s:Highlight('Name_', %s.fg1[0], %s.bg0_s[0], %s.fg1[1], %s.bg0_s[1], 'bold')",
                 \ s:scheme, s:scheme, s:scheme, s:scheme)
     exec printf("call s:Highlight('Modification_', %s.purple[0], %s.bg0_s[0], %s.purple[1], %s.bg0_s[1], 'bold')",
@@ -292,7 +292,7 @@ function! s:InactiveColor()
                 \ s:scheme, s:scheme, s:scheme, s:scheme)
 endfunction
 
-function! s:Highlight(group, guifg, guibg, ctermfg, ctermbg, style)
+function! s:Highlight(group, guifg, guibg, ctermfg, ctermbg, style) abort
     exec printf('hi %s guifg=%s guibg=%s ctermfg=%s ctermbg=%s gui=%s cterm=%s',
               \ a:group, a:guifg, a:guibg, a:ctermfg, a:ctermbg, a:style, a:style)
 endfunction
