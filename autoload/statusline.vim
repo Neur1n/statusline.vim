@@ -154,7 +154,7 @@ endfunction
 " }
 
 "**************************************************************** {Highlighting
-exec 'source $VIMCONFIG/autoload/neur1n/palette.vim'
+exec 'source ./palette.vim'
 if g:colors_name ==# 'gruvbox'
     let s:scheme = 'g:gruvbox'
 elseif g:colors_name ==# 'solarized'
