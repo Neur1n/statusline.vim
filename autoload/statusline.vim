@@ -3,27 +3,6 @@ scriptencoding utf-8
 let s:save_cpo = &cpo
 set cpo&vim
 
-"********************************************************************* {Palette
-let s:gruvbox = {
-    \ 'aqua':   ['#8ec07c', 108],
-    \ 'blue':   ['#83a598', 109],
-    \ 'green':  ['#b8bb26', 142],
-    \ 'orange': ['#fe8019', 208],
-    \ 'purple': ['#d3869b', 175],
-    \ 'red':    ['#fb4934', 167],
-    \ 'yellow': ['#fabd2f', 214],
-    \ 'bg0_h':  ['#1d2021', 234],
-    \ 'bg0':    ['#282828', 235],
-    \ 'bg0_s':  ['#32302f', 236],
-    \ 'fg0':    ['#fbf1c7', 229],
-    \ 'fg1':    ['#ebdbb2', 223],
-    \ 'gray':   ['#928374', 245],
-\ }
-" }
-
-let g:solarized = {}
-
-"************************************************************************ {Misc
 let s:spc = ' '
 let s:sep = '%=%='
 let s:mode_map = {
@@ -165,25 +144,25 @@ function! s:Ruler() abort
 endfunction
 
 function! s:Whitespace() abort
-    return '%#Whitespace_#'.'%{whitespace#NextTrailing().info}'
+    return '%#Whitespace_#'.'%{statusline#whitespace#NextTrailing().info}'
 endfunction
 
 function! s:Warning() abort
-    return '%#Warning_#'.'%{lintinfo#WarnCount()}'
+    return '%#Warning_#'.'%{statusline#lintinfo#WarnCount()}'
 endfunction
 
 function! s:Error() abort
-    return '%#Error_#'.'%{lintinfo#ErrorCount()}'
+    return '%#Error_#'.'%{statusline#lintinfo#ErrorCount()}'
 endfunction
 " }
 
 "**************************************************************** {Highlighting
-" exec 'source ./palette.vim'
-if g:colors_name ==# 'gruvbox'
-    let s:scheme = 's:gruvbox'
-elseif g:colors_name ==# 'solarized'
-    let s:scheme = 's:solarized'
-endif
+" if g:colors_name ==# 'gruvbox'
+"     let s:scheme = statusline#palette#gruvbox()
+" elseif g:colors_name ==# 'solarized'
+"     let s:scheme = statusline#palette#solarized()
+" endif
+let s:palette = statusline#palette#palette()
 
 function! statusline#UpdateColor(...) abort
     for l:w in range(1, winnr('$'))
@@ -211,85 +190,85 @@ function! statusline#UpdateColor(...) abort
 endfunction
 
 function! s:StaticColor() abort
-    exec printf("call s:Highlight('VCS_', %s.fg0[0], %s.bg0_h[0], %s.fg0[1], %s.bg0_h[1], 'bold')",
-                \ s:scheme, s:scheme, s:scheme, s:scheme)
-    exec printf("call s:Highlight('Tag_', %s.fg1[0], %s.bg0_h[0], %s.fg1[1], %s.bg0_h[1], 'italic')",
-                \ s:scheme, s:scheme, s:scheme, s:scheme)
-    exec printf("call s:Highlight('Swap_', %s.aqua[0], %s.bg0_h[0], %s.aqua[1], %s.bg0_h[1], 'bold')",
-                \ s:scheme, s:scheme, s:scheme, s:scheme)
-    exec printf("call s:Highlight('Info_', %s.gray[0], %s.bg0_h[0], %s.gray[1], %s.bg0_h[1], 'NONE')",
-                \ s:scheme, s:scheme, s:scheme, s:scheme)
+    call s:Highlight('VCS_', s:palette.S_vcs[0], s:palette.S_bg[0],
+                \ s:palette.S_vcs[1], s:palette.S_bg[1], 'bold')
+    call s:Highlight('Tag_', s:palette.S_tag[0], s:palette.S_bg[0],
+                \ s:palette.S_tag[1], s:palette.S_bg[1], 'italic')
+    call s:Highlight('Swap_', s:palette.S_swap[0], s:palette.S_bg[0],
+                \ s:palette.S_swap[1], s:palette.S_bg[1], 'bold')
+    call s:Highlight('Info_', s:palette.S_info[0], s:palette.S_bg[0],
+                \ s:palette.S_info[1], s:palette.S_bg[1], 'NONE')
 
-    exec printf("call s:Highlight('Whitespace_', %s.yellow[0], %s.bg0_h[0], %s.yellow[1], %s.bg0_h[1], 'bold')",
-                \ s:scheme, s:scheme, s:scheme, s:scheme)
-    exec printf("call s:Highlight('Warning_', %s.orange[0], %s.bg0_h[0], %s.orange[1], %s.bg0_h[1], 'bold')",
-                \ s:scheme, s:scheme, s:scheme, s:scheme)
-    exec printf("call s:Highlight('Error_', %s.red[0], %s.bg0_h[0], %s.red[1], %s.bg0_h[1], 'bold')",
-                \ s:scheme, s:scheme, s:scheme, s:scheme)
+    call s:Highlight('Whitespace_', s:palette.S_spc[0], s:palette.S_bg[0],
+                \ s:palette.S_spc[1], s:palette.S_bg[1], 'bold')
+    call s:Highlight('Warning_', s:palette.S_warn[0], s:palette.S_bg[0],
+                \ s:palette.S_warn[1], s:palette.S_bg[1], 'bold')
+    call s:Highlight('Error_', s:palette.S_err[0], s:palette.S_bg[0],
+                \ s:palette.S_err[1], s:palette.S_bg[1], 'bold')
 endfunction
 
 function! s:NormalColor() abort
-    exec printf("call s:Highlight('Mode_', %s.bg0_h[0], %s.green[0], %s.bg0_h[1], %s.green[1], 'bold')",
-                \ s:scheme, s:scheme, s:scheme, s:scheme)
-    exec printf("call s:Highlight('Name_', %s.aqua[0], %s.bg0_h[0], %s.aqua[1], %s.bg0_h[1], 'bold')",
-                \ s:scheme, s:scheme, s:scheme, s:scheme)
-    exec printf("call s:Highlight('Modification_', %s.red[0], %s.bg0_h[0], %s.red[1], %s.bg0_h[1], 'bold')",
-                \ s:scheme, s:scheme, s:scheme, s:scheme)
-    exec printf("call s:Highlight('Ruler_', %s.green[0], %s.bg0_h[0], %s.green[1], %s.bg0_h[1], 'NONE')",
-                \ s:scheme, s:scheme, s:scheme, s:scheme)
+    call s:Highlight('Mode_', s:palette.S_bg[0], s:palette.N_mode[0],
+                \ s:palette.S_bg[1], s:palette.N_mode[1], 'bold')
+    call s:Highlight('Name_', s:palette.N_name[0], s:palette.S_bg[0],
+                \ s:palette.N_name[1], s:palette.S_bg[1], 'bold')
+    call s:Highlight('Modification_', s:palette.N_modi[0], s:palette.S_bg[0],
+                \ s:palette.N_modi[1], s:palette.S_bg[1], 'bold')
+    call s:Highlight('Ruler_', s:palette.N_ruler[0], s:palette.S_bg[0],
+                \ s:palette.N_ruler[1], s:palette.S_bg[1], 'NONE')
 endfunction
 
 function! s:InsertColor() abort
-    exec printf("call s:Highlight('Mode_', %s.bg0_h[0], %s.aqua[0], %s.bg0_h[1], %s.aqua[1], 'bold')",
-                \ s:scheme, s:scheme, s:scheme, s:scheme)
-    exec printf("call s:Highlight('Name_', %s.blue[0], %s.bg0_h[0], %s.blue[1], %s.bg0_h[1], 'bold')",
-                \ s:scheme, s:scheme, s:scheme, s:scheme)
-    exec printf("call s:Highlight('Modification_', %s.red[0], %s.bg0_h[0], %s.red[1], %s.bg0_h[1], 'bold')",
-                \ s:scheme, s:scheme, s:scheme, s:scheme)
-    exec printf("call s:Highlight('Ruler_', %s.blue[0], %s.bg0_h[0], %s.blue[1], %s.bg0_h[1], 'NONE')",
-                \ s:scheme, s:scheme, s:scheme, s:scheme)
+    call s:Highlight('Mode_', s:palette.S_bg[0], s:palette.I_mode[0],
+                \ s:palette.S_bg[1], s:palette.I_mode[1], 'bold')
+    call s:Highlight('Name_', s:palette.I_name[0], s:palette.S_bg[0],
+                \ s:palette.I_name[1], s:palette.S_bg[1], 'bold')
+    call s:Highlight('Modification_', s:palette.I_modi[0], s:palette.S_bg[0],
+                \ s:palette.I_modi[1], s:palette.S_bg[1], 'bold')
+    call s:Highlight('Ruler_', s:palette.I_ruler[0], s:palette.S_bg[0],
+                \ s:palette.I_ruler[1], s:palette.S_bg[1], 'NONE')
 endfunction
 
 function! s:VisualColor() abort
-    exec printf("call s:Highlight('Mode_', %s.bg0_h[0], %s.yellow[0], %s.bg0_h[1], %s.yellow[1], 'bold')",
-                \ s:scheme, s:scheme, s:scheme, s:scheme)
-    exec printf("call s:Highlight('Name_', %s.orange[0], %s.bg0_h[0], %s.orange[1], %s.bg0_h[1], 'bold')",
-                \ s:scheme, s:scheme, s:scheme, s:scheme)
-    exec printf("call s:Highlight('Modification_', %s.red[0], %s.bg0_h[0], %s.red[1], %s.bg0_h[1], 'bold')",
-                \ s:scheme, s:scheme, s:scheme, s:scheme)
-    exec printf("call s:Highlight('Ruler_', %s.yellow[0], %s.bg0_h[0], %s.yellow[1], %s.bg0_h[1], 'NONE')",
-                \ s:scheme, s:scheme, s:scheme, s:scheme)
+    call s:Highlight('Mode_', s:palette.S_bg[0], s:palette.V_mode[0],
+                \ s:palette.S_bg[1], s:palette.V_mode[1], 'bold')
+    call s:Highlight('Name_', s:palette.V_name[0], s:palette.S_bg[0],
+                \ s:palette.V_name[1], s:palette.S_bg[1], 'bold')
+    call s:Highlight('Modification_', s:palette.V_modi[0], s:palette.S_bg[0],
+                \ s:palette.V_modi[1], s:palette.S_bg[1], 'bold')
+    call s:Highlight('Ruler_', s:palette.V_ruler[0], s:palette.S_bg[0],
+                \ s:palette.V_ruler[1], s:palette.S_bg[1], 'NONE')
 endfunction
 
 function! s:ReplaceColor() abort
-    exec printf("call s:Highlight('Mode_', %s.bg0_h[0], %s.purple[0], %s.bg0_h[1], %s.purple[1], 'bold')",
-                \ s:scheme, s:scheme, s:scheme, s:scheme)
-    exec printf("call s:Highlight('Name_', %s.blue[0], %s.bg0_h[0], %s.blue[1], %s.bg0_h[1], 'bold')",
-                \ s:scheme, s:scheme, s:scheme, s:scheme)
-    exec printf("call s:Highlight('Modification_', %s.red[0], %s.bg0_h[0], %s.red[1], %s.bg0_h[1], 'bold')",
-                \ s:scheme, s:scheme, s:scheme, s:scheme)
-    exec printf("call s:Highlight('Ruler_', %s.purple[0], %s.bg0_h[0], %s.purple[1], %s.bg0_h[1], 'NONE')",
-                \ s:scheme, s:scheme, s:scheme, s:scheme)
+    call s:Highlight('Mode_', s:palette.S_bg[0], s:palette.R_mode[0],
+                \ s:palette.S_bg[1], s:palette.R_mode[1], 'bold')
+    call s:Highlight('Name_', s:palette.R_name[0], s:palette.S_bg[0],
+                \ s:palette.R_name[1], s:palette.S_bg[1], 'bold')
+    call s:Highlight('Modification_', s:palette.R_modi[0], s:palette.S_bg[0],
+                \ s:palette.R_modi[1], s:palette.S_bg[1], 'bold')
+    call s:Highlight('Ruler_', s:palette.R_ruler[0], s:palette.S_bg[0],
+                \ s:palette.R_ruler[1], s:palette.S_bg[1], 'NONE')
 endfunction
 
 function! s:CmdlineColor() abort
-    exec printf("call s:Highlight('Mode_', %s.bg0_h[0], %s.red[0], %s.bg0_h[1], %s.red[1], 'bold')",
-                \ s:scheme, s:scheme, s:scheme, s:scheme)
-    exec printf("call s:Highlight('Name_', %s.aqua[0], %s.bg0_h[0], %s.aqua[1], %s.bg0_h[1], 'bold')",
-                \ s:scheme, s:scheme, s:scheme, s:scheme)
-    exec printf("call s:Highlight('Modification_', %s.red[0], %s.bg0_h[0], %s.red[1], %s.bg0_h[1], 'bold')",
-                \ s:scheme, s:scheme, s:scheme, s:scheme)
-    exec printf("call s:Highlight('Ruler_', %s.red[0], %s.bg0_h[0], %s.red[1], %s.bg0_h[1], 'NONE')",
-                \ s:scheme, s:scheme, s:scheme, s:scheme)
+    call s:Highlight('Mode_', s:palette.S_bg[0], s:palette.C_mode[0],
+                \ s:palette.S_bg[1], s:palette.C_mode[1], 'bold')
+    call s:Highlight('Name_', s:palette.C_name[0], s:palette.S_bg[0],
+                \ s:palette.C_name[1], s:palette.S_bg[1], 'bold')
+    call s:Highlight('Modification_', s:palette.C_modi[0], s:palette.S_bg[0],
+                \ s:palette.C_modi[1], s:palette.S_bg[1], 'bold')
+    call s:Highlight('Ruler_', s:palette.C_ruler[0], s:palette.S_bg[0],
+                \ s:palette.C_ruler[1], s:palette.S_bg[1], 'NONE')
 endfunction
 
 function! s:InactiveColor() abort
-    exec printf("call s:Highlight('Name_', %s.fg1[0], %s.bg0_s[0], %s.fg1[1], %s.bg0_s[1], 'bold')",
-                \ s:scheme, s:scheme, s:scheme, s:scheme)
-    exec printf("call s:Highlight('Modification_', %s.purple[0], %s.bg0_s[0], %s.purple[1], %s.bg0_s[1], 'bold')",
-                \ s:scheme, s:scheme, s:scheme, s:scheme)
-    exec printf("call s:Highlight('Ruler_', %s.fg1[0], %s.bg0_s[0], %s.fg1[1], %s.bg0_s[1], 'NONE')",
-                \ s:scheme, s:scheme, s:scheme, s:scheme)
+    call s:Highlight('Name_', s:palette.U_name[0], s:palette.S_bg[0],
+                \ s:palette.U_name[1], s:palette.S_bg[1], 'bold')
+    call s:Highlight('Modification_', s:palette.U_modi[0], s:palette.S_bg[0],
+                \ s:palette.U_modi[1], s:palette.S_bg[1], 'bold')
+    call s:Highlight('Ruler_', s:palette.U_ruler[0], s:palette.S_bg[0],
+                \ s:palette.U_ruler[1], s:palette.S_bg[1], 'NONE')
 endfunction
 
 function! s:Highlight(group, guifg, guibg, ctermfg, ctermbg, style) abort
