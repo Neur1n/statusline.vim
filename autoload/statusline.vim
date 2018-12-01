@@ -57,18 +57,17 @@ endfunction
 
 function! s:Left(status) abort
     if a:status ==# 'active'
-        return s:Mode().s:GitBranch().s:Name().s:Modification()
+        return s:Mode().s:GitBranch().s:Name().s:Modification().s:Swap()
     elseif a:status ==# 'inactive'
-        return s:Name().s:Modification()
+        return s:Name().s:Modification().s:Swap()
     endif
 endfunction
 
 function! s:Right(status) abort
     if a:status ==# 'active'
-        return s:Tag().s:Swap().'%<'.s:Info().s:Ruler()
-                    \.s:Whitespace().s:Warning().s:Error()
+        return s:Tag().'%<'.s:Info().s:Ruler().s:Whitespace().s:Warning().s:Error()
     elseif a:status ==# 'inactive'
-        return s:Swap().s:Ruler()
+        return s:Ruler()
     endif
 endfunction
 " }
@@ -80,7 +79,7 @@ endfunction
 
 function! statusline#Mode() abort
     if &filetype ==# 'help'
-        let l:mode = 'HELP'
+        let l:mode = 'help'
     " elseif &filetype ==# 'qf'
     "     let l:mode = 'quickfix'
     elseif &filetype ==# 'startify'
@@ -98,7 +97,11 @@ function! statusline#Mode() abort
 endfunction
 
 function! s:GitBranch() abort
-    return '%#VCS_#'.(gitbranch#name() ==# '' ? '' : s:spc.'%{gitbranch#name()}')
+    if exists('g:loaded_gitbranch')
+        return '%#VCS_#'.(gitbranch#name() ==# '' ? '' : s:spc.'%{gitbranch#name()}')
+    else
+        return ''
+    endif
 endfunction
 
 function! s:Name() abort
@@ -111,13 +114,21 @@ function! s:Modification() abort
     return '%#Modification_#'.l:modified.l:readonly
 endfunction
 
-function! s:Tag() abort
-    return '%#Tag_#'.'%{tagbar#currenttag("%s", "", "%f")}'.s:spc
-endfunction
-
 function! s:Swap() abort
     " Indicator for WindowSwap plugin.
-    return '%#Swap_#'.'%{WindowSwap#IsCurrentWindowMarked() ? "WS" : ""}'
+    if exists('g:windowswap_map_keys')
+        return '%#Swap_#'.'%{WindowSwap#IsCurrentWindowMarked() ? " WS" : ""}'
+    else
+        return ''
+    endif
+endfunction
+
+function! s:Tag() abort
+    " Refer to autoload/tagbar.vim, I don't know why it works. :p
+    if exists(':Tagbar')
+        return '%#Tag_#'.'%{tagbar#currenttag("%s", "", "%f")}'.s:spc
+    else
+        return ''
 endfunction
 
 function! s:Info() abort
@@ -157,11 +168,6 @@ endfunction
 " }
 
 "**************************************************************** {Highlighting
-" if g:colors_name ==# 'gruvbox'
-"     let s:scheme = statusline#palette#gruvbox()
-" elseif g:colors_name ==# 'solarized'
-"     let s:scheme = statusline#palette#solarized()
-" endif
 let s:palette = statusline#palette#palette()
 
 function! statusline#UpdateColor(...) abort
@@ -190,12 +196,18 @@ function! statusline#UpdateColor(...) abort
 endfunction
 
 function! s:StaticColor() abort
-    call s:Highlight('VCS_', s:palette.S_vcs[0], s:palette.S_bg[0],
-                \ s:palette.S_vcs[1], s:palette.S_bg[1], 'bold')
-    call s:Highlight('Tag_', s:palette.S_tag[0], s:palette.S_bg[0],
-                \ s:palette.S_tag[1], s:palette.S_bg[1], 'italic')
-    call s:Highlight('Swap_', s:palette.S_swap[0], s:palette.S_bg[0],
-                \ s:palette.S_swap[1], s:palette.S_bg[1], 'bold')
+    if exists('g:windowswap_map_keys')
+        call s:Highlight('Swap_', s:palette.S_swap[0], s:palette.S_bg[0],
+                    \ s:palette.S_swap[1], s:palette.S_bg[1], 'bold')
+    endif
+    if exists('g:loaded_gitbranch')
+        call s:Highlight('VCS_', s:palette.S_vcs[0], s:palette.S_bg[0],
+                    \ s:palette.S_vcs[1], s:palette.S_bg[1], 'bold')
+    endif
+    if exists(':Tagbar')
+        call s:Highlight('Tag_', s:palette.S_tag[0], s:palette.S_bg[0],
+                    \ s:palette.S_tag[1], s:palette.S_bg[1], 'italic')
+    endif
     call s:Highlight('Info_', s:palette.S_info[0], s:palette.S_bg[0],
                 \ s:palette.S_info[1], s:palette.S_bg[1], 'NONE')
 
