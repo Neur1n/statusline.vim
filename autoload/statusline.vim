@@ -116,7 +116,7 @@ endfunction
 
 function! s:Swap() abort
     " Indicator for WindowSwap plugin.
-    if exists('g:windowswap_map_keys')
+    if exists('g:loaded_windowswap')
         return '%#Swap_#'.'%{WindowSwap#IsCurrentWindowMarked() ? " WS" : ""}'
     else
         return ''
@@ -196,7 +196,7 @@ function! statusline#UpdateColor(...) abort
 endfunction
 
 function! s:StaticColor() abort
-    if exists('g:windowswap_map_keys')
+    if exists('g:loaded_windowswap')
         call s:Highlight('Swap_', s:palette.S_swap[0], s:palette.S_bg[0],
                     \ s:palette.S_swap[1], s:palette.S_bg[1], 'bold')
     endif
