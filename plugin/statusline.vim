@@ -11,7 +11,7 @@ set cpo&vim
 augroup statusline
     autocmd!
     autocmd WinEnter,BufWinEnter,FileType,SessionLoadPost * call statusline#Update()
-    autocmd CursorMoved,BufUnload * call statusline#UpdateOnce()
+    autocmd BufUnload,TextChanged * call statusline#UpdateOnce()
     autocmd SessionLoadPost * call statusline#UpdateColor()
 augroup END
 
