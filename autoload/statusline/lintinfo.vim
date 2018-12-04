@@ -3,7 +3,7 @@ scriptencoding utf-8
 let s:save_cpo = &cpo
 set cpo&vim
 
-" ✗
+" ✗
 function! statusline#lintinfo#ErrorCount() abort
     let l:bufnr = bufnr('%')
     let l:loclist = getloclist(0)
@@ -46,7 +46,7 @@ function! statusline#lintinfo#WarnCount() abort
         endif
     endfor
 
-    let l:w_cnt = l:w_cnt == 0 ? '' : ''.l:w_cnt.'('.l:first_w.')'
+    let l:w_cnt = l:w_cnt == 0 ? '' : ''.l:w_cnt.'('.l:first_w.')'
     return l:w_cnt
 endfunction
 
