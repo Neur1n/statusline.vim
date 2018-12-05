@@ -17,6 +17,7 @@ augroup END
 
 nmap <silent> <C-p> :call statusline#lintinfo#Jump('prev', 1)<cr>
 nmap <silent> <C-n> :call statusline#lintinfo#Jump('next', 1)<cr>
+nmap <silent> <leader>tw :call statusline#whitespace#TrimWhitespace()<cr>
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

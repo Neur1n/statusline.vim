@@ -14,5 +14,9 @@ function! statusline#whitespace#NextTrailing() abort
     endif
 endfunction
 
+function! statusline#whitespace#TrimWhitespace() abort
+    execute '%s/\s\+$//g'
+endfunction
+
 let &cpo = s:save_cpo
 unlet s:save_cpo
