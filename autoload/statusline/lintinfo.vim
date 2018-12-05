@@ -7,6 +7,7 @@ set cpo&vim
 function! statusline#lintinfo#ErrorCount() abort
     let l:bufnr = bufnr('%')
     let l:loclist = getloclist(0)
+    let l:loclist = filter(copy(l:loclist), {key -> l:loclist[key].lnum > 0})
 
     let l:e_cnt = 0
     let l:first_e = !empty(l:loclist) ? l:loclist[-1].lnum : ''
@@ -30,6 +31,7 @@ endfunction
 function! statusline#lintinfo#WarnCount() abort
     let l:bufnr = bufnr('%')
     let l:loclist = getloclist(0)
+    let l:loclist = filter(copy(l:loclist), {key -> l:loclist[key].lnum > 0})
 
     let l:w_cnt = 0
     let l:first_w = !empty(l:loclist) ? l:loclist[-1].lnum : ''
