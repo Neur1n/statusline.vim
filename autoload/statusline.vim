@@ -109,15 +109,15 @@ function! s:Name() abort
 endfunction
 
 function! s:Modification() abort
-    let l:modified = '%m'
-    let l:readonly = '%{&readonly ? " \ue0a2 " : ""}'
+    let l:modified = '%m '
+    let l:readonly = '%{&readonly ? " " : ""}'
     return '%#Modification_#'.l:modified.l:readonly
 endfunction
 
 function! s:Swap() abort
     " Indicator for WindowSwap plugin.
     if exists('g:loaded_windowswap')
-        return '%#Swap_#'.'%{WindowSwap#IsCurrentWindowMarked() ? " WS" : ""}'
+        return '%#Swap_#'.'%{WindowSwap#IsCurrentWindowMarked() ? "WS" : ""}'
     else
         return ''
     endif
@@ -129,6 +129,7 @@ function! s:Tag() abort
         return '%#Tag_#'.'%{tagbar#currenttag("%s", "", "%f")}'.s:spc
     else
         return ''
+    endif
 endfunction
 
 function! s:Info() abort
