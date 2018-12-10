@@ -65,7 +65,8 @@ endfunction
 
 function! s:Right(status) abort
     if a:status ==# 'active'
-        return s:Tag().'%<'.s:Info().s:Ruler().s:Whitespace().s:Warning().s:Error()
+        " return s:Tag().'%<'.s:Info().s:Ruler().s:Whitespace().s:Warning().s:Error()
+        return s:Tag().'%<'.s:Info().s:Ruler().s:Warning().s:Error()
     elseif a:status ==# 'inactive'
         return s:Ruler()
     endif
@@ -90,8 +91,8 @@ function! statusline#Mode() abort
         let l:mode = get(s:mode_map, mode(), mode())
     endif
 
-    let l:mode .= &paste ? ' | PASTE' : ''
-    let l:mode .= &spell ? ' | SPELL' : ''
+    let l:mode .= &paste ? '|PASTE' : ''
+    let l:mode .= &spell ? '|SPELL' : ''
 
     return l:mode
 endfunction
